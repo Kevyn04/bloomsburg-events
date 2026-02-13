@@ -125,8 +125,8 @@ export default function HomeScreen() {
 
             {/* Text */}
             <View style={styles.content}>
-                <Text style={styles.title}>Bloomsburg Unite</Text>
-                <Text style={styles.subtitle}>UNITING STUDENTS OF BLOOMSBURG</Text>
+                <Text style={styles.title}>The Hangout</Text>
+                <Text style={styles.subtitle}>FOR EVERYONE, EVERYWHERE</Text>
             </View>
         </View>
     );
