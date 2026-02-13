@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { View, Text, StyleSheet, Animated, Easing } from "react-native";
+import { View, Text, StyleSheet, Animated, Easing, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import Svg, { Defs, RadialGradient, Stop, Rect, Circle } from "react-native-svg";
 import { useFonts, GreatVibes_400Regular } from "@expo-google-fonts/great-vibes";
@@ -27,12 +27,12 @@ export default function HomeScreen() {
                         toValue: 1,
                         duration: 3800, // wave speed (lower = faster)
                         easing: Easing.out(Easing.quad),
-                        useNativeDriver: true,
+                        useNativeDriver: false, // ✅ IMPORTANT: SVG props can't use native driver
                     }),
                     Animated.timing(v, {
                         toValue: 0,
                         duration: 0,
-                        useNativeDriver: true,
+                        useNativeDriver: false, // ✅ keep consistent
                     }),
                 ])
             );
@@ -74,13 +74,10 @@ export default function HomeScreen() {
 
     return (
         <View style={styles.container}>
-            {/* Base background (Bloomsburg maroon vibe) */}
-            <LinearGradient
-                colors={["#120303", "#3b0d0d", "#7a1f1f"]}
-                style={StyleSheet.absoluteFill}
-            />
+            {/* Base background */}
+            <LinearGradient colors={["#120303", "#3b0d0d", "#7a1f1f"]} style={StyleSheet.absoluteFill} />
 
-            {/* Soft royal under-glow */}
+            {/* Soft under-glow */}
             <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
                 <Defs>
                     <RadialGradient id="glow" cx="50%" cy="45%" r="60%">
@@ -92,41 +89,63 @@ export default function HomeScreen() {
                 <Rect x="0" y="0" width="100%" height="100%" fill="url(#glow)" />
             </Svg>
 
-            {/* Expanding wave rings from center */}
+            {/* Expanding wave rings */}
             <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
                 <AnimatedCircle
                     cx="50%"
                     cy="45%"
-                    r={r1 as any}
+                    r={r1}
                     fill="rgba(0,0,0,0)"
                     stroke="rgba(220,38,38,1)"
                     strokeWidth={2}
-                    opacity={o1 as any}
+                    opacity={o1}
                 />
                 <AnimatedCircle
                     cx="50%"
                     cy="45%"
-                    r={r2 as any}
+                    r={r2}
                     fill="rgba(0,0,0,0)"
                     stroke="rgba(124,58,237,1)"
                     strokeWidth={2}
-                    opacity={o2 as any}
+                    opacity={o2}
                 />
                 <AnimatedCircle
                     cx="50%"
                     cy="45%"
-                    r={r3 as any}
+                    r={r3}
                     fill="rgba(0,0,0,0)"
                     stroke="rgba(14,165,233,1)"
                     strokeWidth={2}
-                    opacity={o3 as any}
+                    opacity={o3}
                 />
             </Svg>
 
-            {/* Text */}
+            {/* Text + Buttons */}
             <View style={styles.content}>
                 <Text style={styles.title}>The Hangout</Text>
                 <Text style={styles.subtitle}>FOR EVERYONE, EVERYWHERE</Text>
+
+                <View style={styles.buttonRow}>
+                    <Pressable
+                        style={({ pressed }) => [styles.primaryBtn, pressed && styles.pressed]}
+                        onPress={() => {
+                            // TODO: hook up navigation (expo-router / react-navigation)
+                            console.log("Sign In");
+                        }}
+                    >
+                        <Text style={styles.primaryBtnText}>Sign In</Text>
+                    </Pressable>
+
+                    <Pressable
+                        style={({ pressed }) => [styles.secondaryBtn, pressed && styles.pressed]}
+                        onPress={() => {
+                            // TODO: hook up navigation (expo-router / react-navigation)
+                            console.log("Sign Up");
+                        }}
+                    >
+                        <Text style={styles.secondaryBtnText}>Sign Up</Text>
+                    </Pressable>
+                </View>
             </View>
         </View>
     );
@@ -139,16 +158,17 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        justifyContent: "center",   // vertical center
-        alignItems: "center",       // horizontal center
+        justifyContent: "center",
+        alignItems: "center",
         paddingHorizontal: 24,
     },
+
     title: {
         fontSize: 56,
         fontFamily: "GreatVibes_400Regular",
         color: "white",
         letterSpacing: 1,
-        textAlign: "center",        // centers text itself
+        textAlign: "center",
         textShadowColor: "rgba(255,255,255,0.35)",
         textShadowOffset: { width: 0, height: 0 },
         textShadowRadius: 14,
@@ -161,9 +181,52 @@ const styles = StyleSheet.create({
         letterSpacing: 2,
         color: "#f8fafc",
         opacity: 0.9,
-        textAlign: "center",        // centers subtitle
+        textAlign: "center",
     },
 
+    buttonRow: {
+        marginTop: 22,
+        width: "100%",
+        paddingHorizontal: 24,
+        gap: 12,
+    },
+
+    primaryBtn: {
+        height: 48,
+        borderRadius: 14,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "rgba(255,255,255,0.92)",
+    },
+
+    primaryBtnText: {
+        fontSize: 14,
+        letterSpacing: 1.5,
+        color: "#0b0b0f",
+        fontFamily: "Cinzel_700Bold",
+    },
+
+    secondaryBtn: {
+        height: 48,
+        borderRadius: 14,
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.75)",
+        backgroundColor: "rgba(0,0,0,0.18)",
+    },
+
+    secondaryBtnText: {
+        fontSize: 14,
+        letterSpacing: 1.5,
+        color: "#f8fafc",
+        fontFamily: "Cinzel_700Bold",
+    },
+
+    pressed: {
+        transform: [{ scale: 0.98 }],
+        opacity: 0.9,
+    },
 
     loadingContainer: {
         flex: 1,
